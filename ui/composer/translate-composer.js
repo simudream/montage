@@ -500,9 +500,12 @@ var TranslateComposer = exports.TranslateComposer = Montage.create(Composer,/** 
                 return;
             }
 
-            if (this._shouldPreventDefault(event)) {
+            // This is preventing the ability to drag and drop. According to Stuart, that's exactly what it's supposed to be doing!
+            // It's unfortunately interfering with applications that need to have drag and drop elements inside a flow
+            // So it's being diabled for the time being
+            /*if (this._shouldPreventDefault(event)) {
                 event.preventDefault();
-            }
+            }*/
 
             // Register some interest in the mouse pointer internally, we may end up claiming it but let's see if
             // anybody else cares first
