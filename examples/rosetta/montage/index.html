@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <title>Todos - Montage</title>
+        <script src="../../../montage.js"></script>
+        <link rel="stylesheet" href="../todos.css" />
+        <script type="text/montage-serialization">{
+            "owner": {
+                "object": "todo",
+                "properties": {
+                    "element": {"#": "todoapp"}
+                }
+            },
+
+            "todoList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "todo-list"}
+                },
+                "bindings": {
+                    "objects": {"<-": "@owner.todos"}
+                }
+            },
+
+            "todoItem": {
+                "prototype": "todo[TodoItem]",
+                "properties": {
+                    "element": {"#": "todo-item"}
+                },
+                "bindings": {
+                    "data": {"<-": "@todoList.objectAtCurrentIteration"}
+                }
+            },
+
+            "todoCount": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "todo-count"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.todoCount"}
+                }
+            },
+
+            "todoClear": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "todo-clear"},
+                    "identifier": "clear"
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"},
+                        "capture": false
+                    }
+                ]
+            }
+        }</script>
+    </head>
+    <body>
+        <div data-montage-id="todoapp">
+            <h1>Todos</h1>
+            <h2>Montage</h2>
+            <a class="see-others" href="../">See this app done with other frameworks</a>
+
+            <div class="content">
+                <div class="create-todo">
+                    <input id="new-todo" data-montage-id="new-todo" placeholder="What needs to be done?" type="text">
+                </div>
+                <div>
+                    <ul data-montage-id="todo-list" class="todo-list">
+                        <li data-montage-id="todo-item">
+                            <div>
+                                <input class="check" type="checkbox" data-montage-id="checkbox">
+                                <div class="todo-text"></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div data-montage-id="todo-stats" class="todo-stats">
+                    <span>
+                        <span data-montage-id="todo-count">1</span> items remaining
+                    </span>
+                    <span class="todo-clear">
+                        <a href="#" data-montage-id="todo-clear">Clear Completed</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <title>Todos - Angular</title>
+
+        <script src="angular-1.0.0rc10.min.js"></script>
+        <script src="todo.js"></script>
+
+        <link rel="stylesheet" href="../todos.css" />
+    </head>
+    <body>
+        <div ng-app>
+            <h1>Todos</h1>
+            <h2>Angular</h2>
+            <a class="see-others" href="../">See this app done with other frameworks</a>
+
+            <div ng-controller="TodoCtrl" class="content">
+                <form ng-submit="addTodo()" class="create-todo">
+                    <input id="new-todo" ng-model="todoText" placeholder="What needs to be done?" type="text">
+                </form>
+
+                <ul class="todo-list">
+                    <li ng-repeat="todo in todos">
+                        <input class="check" type="checkbox" ng-model="todo.done">
+                        <div class="todo-text done-{{todo.done}}">{{todo.text}}</div>
+                    </li>
+                </ul>
+
+                <div class="todo-stats">
+                    <span>
+                        {{remaining()}} items remaining</span>
+                    </span>
+                    <span id="todo-clear" class="todo-clear">
+                        <a href="" ng-click="archive()">Clear Completed</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+​

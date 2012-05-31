@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <title>Todos - Ember</title>
+
+        <script src="jquery-1.7.2.min.js"></script>
+        <script src="ember-0.9.8.1.min.js"></script>
+        <script src="todo.js"></script>
+        
+        <link rel="stylesheet" href="../todos.css" />
+    </head>
+    <body>
+        <div>
+            <h1>Todos</h1>
+            <h2>Ember</h2>
+            <a class="see-others" href="../">See this app done with other frameworks</a>
+
+            <div class="content">
+            <script type="text/x-handlebars">
+                <div class="create-todo">
+                    {{view Todos.CreateTodoView id="new-todo" placeholder="What needs to be done?"}}
+                </div>
+  
+                {{#collection contentBinding="Todos.todosController" tagName="ul" itemClassBinding="content.isDone" class="todo-list"}}
+                    {{view Em.Checkbox valueBinding="content.isDone" class="check"}}
+                    <div class="todo-text">{{content.title}}</div>
+                {{/collection}}
+
+                {{#view Todos.StatsView id="stats" class="todo-stats"}}
+                    <span>
+                    {{remainingString}} remaining
+                    </span>
+                    <span class="todo-clear">
+                        {{#view Em.Button tagName="a"
+                            classBinding="isActive"
+                            target="Todos.todosController"
+                            action="clearCompletedTodos"}}
+                            Clear Completed
+                        {{/view}}
+                    </span>
+                {{/view}}
+            </script>
+            </div>
+        </div>
+    </body>
+</html>
+​

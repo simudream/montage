@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <title>Todos - Backbone</title>
+
+        <script src="underscore-min.js"></script>
+        <script src="jquery-1.7.2.min.js"></script>
+        <script src="backbone-min.js"></script>
+        <script src="backbone-localstorage.js"></script>
+        <script src="todo.js"></script>
+
+        <link rel="stylesheet" href="../todos.css" />
+
+        <script type="text/template" id="item-template">
+            <div class="<%= done ? 'is-done' : '' %>" >
+                <input class="check" type="checkbox" <%= done ? 'checked="checked"' : '' %> />
+                <div class="todo-text"><%= title %></div>
+            </div>
+        </script>
+
+        <script type="text/template" id="stats-template">
+            <span>
+                <span><%= remaining %> <%= remaining == 1 ? 'item' : 'items' %> remaining</span>
+            </span>
+            <span class="todo-clear">
+                <a href="" id="clear-completed">Clear Completed</a>
+            </span>
+        </script>
+    </head>
+    <body>
+        <div id="todoapp">
+            <h1>Todos</h1>
+            <h2>Backbone</h2>
+            <a class="see-others" href="../">See this app done with other frameworks</a>
+
+            <div class="content">
+                <div class="create-todo">
+                    <input id="new-todo" placeholder="What needs to be done?" type="text">
+                </div>
+
+                <ul class="todo-list" id="todo-list"></ul>
+
+                <div class="todo-stats" id="todo-stats"></div>
+            </div>
+        </div>
+    </body>
+</html>
+​
