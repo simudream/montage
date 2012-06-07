@@ -574,7 +574,20 @@ var ChangeNotificationDescriptor = Montage.create(Montage, {
                             notification._dependenciesIndex = dependentDescriptorsIndex[key];
                         }
                         notification[uuid] = true;
+
+                        /*if(!topLevelChangeUUID) {
+                            topLevelChangeUUID = uuid;
+                            console.log("Top Level change is firing:", notification);
+                        } else {
+                            console.log("   Change is firing:", notification);
+                        }*/
+                        
                         listener.listenerFunction.call(listener.listenerTarget, notification);
+
+                        /*if(topLevelChangeUUID === uuid) {
+                            topLevelChangeUUID = null;
+                        }*/
+
                         notification[uuid] = false;
                     }
                 }
@@ -583,6 +596,8 @@ var ChangeNotificationDescriptor = Montage.create(Montage, {
         }
     }
 });
+
+var topLevelChangeUUID = null;
 
 var ChangeNotificationFunctionDescriptor = Object.create(null, {
     listenerTarget: {writable: true, value: null},

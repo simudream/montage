@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Todos - Montage</title>
-        <script src="../../../montage.js"></script>
+        <script src="../../../../montage.js"></script>
         <link rel="stylesheet" href="../todos.css" />
         <script type="text/montage-serialization">{
             "owner": {
@@ -25,28 +25,57 @@
             "todoItem": {
                 "prototype": "todo[TodoItem]",
                 "properties": {
-                    "element": {"#": "todo-item"}
+                    "element": {"#": "todo-item"},
+                    "doneCheck": {"@": "doneCheck"}
                 },
                 "bindings": {
                     "data": {"<-": "@todoList.objectAtCurrentIteration"}
                 }
             },
 
-            "todoCount": {
-                "prototype": "montage/ui/dynamic-text.reel",
+            "doneCheck": {
+                "prototype": "montage/ui/checkbox.reel",
                 "properties": {
-                    "element": {"#": "todo-count"}
+                    "element": {"#": "done-check"},
+                    "identifier": "done"
                 },
                 "bindings": {
-                    "value": {"<-": "@owner.todoCount"}
+                    "checked": {"<->": "@todoList.objectAtCurrentIteration.done"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"},
+                        "capture": false
+                    }
+                ]
+            },
+
+            "todoText": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "todo-text"}
+                },
+                "bindings": {
+                    "value": {"<->": "@todoList.objectAtCurrentIteration.text"}
                 }
             },
 
-            "todoClear": {
+            "remaining": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "remaining"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.remaining"}
+                }
+            },
+
+            "archive": {
                 "prototype": "montage/ui/button.reel",
                 "properties": {
-                    "element": {"#": "todo-clear"},
-                    "identifier": "clear"
+                    "element": {"#": "archive"},
+                    "identifier": "archive"
                 },
                 "listeners": [
                     {
@@ -72,18 +101,18 @@
                     <ul data-montage-id="todo-list" class="todo-list">
                         <li data-montage-id="todo-item">
                             <div>
-                                <input class="check" type="checkbox" data-montage-id="checkbox">
-                                <div class="todo-text"></div>
+                                <input class="check" type="checkbox" data-montage-id="done-check" />
+                                <div class="todo-text" data-montage-id="todo-text"></div>
                             </div>
                         </li>
                     </ul>
                 </div>
                 <div data-montage-id="todo-stats" class="todo-stats">
                     <span>
-                        <span data-montage-id="todo-count">1</span> items remaining
+                        <span data-montage-id="remaining">1</span> items remaining
                     </span>
                     <span class="todo-clear">
-                        <a href="#" data-montage-id="todo-clear">Clear Completed</a>
+                        <a href="#" data-montage-id="archive">Clear Completed</a>
                     </span>
                 </div>
             </div>

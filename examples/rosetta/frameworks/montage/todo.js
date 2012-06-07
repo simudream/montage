@@ -7,35 +7,26 @@ var Todo = exports.Todo = Montage.create(Component, {
     },
 
     todos: {
-        value: null
+        value: [],
+        distinct: true
     },
 
-    todoList: {
-        value: null,
-        serializable: true
-    },
-
-    todoCount: {
-        value: 0,
-        serializable: true
-    },
-
-    todoCountDone: {
-        value: 0,
-        serializable: true
+    remaining: {
+        get: function() {
+            return this.todos.filter(function(data) { return !data.done; }).length;
+        }
     },
 
     templateDidLoad: {
         value: function() {
-            var self = this,
-                todos;
+            var self = this;
 
-            this.todos = [];
             this.newTodo = document.getElementById("new-todo");
 
             this.newTodo.addEventListener("keypress", function(event) {
                 if (event.keyCode == 13 && this.value) {
                     self.todos.push({text: this.value, done: false});
+                    this.dispatchPropertyChange("remaining", function() {});
                     self.clearInput = true;
                     self.needsDraw = true;
                 }
@@ -51,11 +42,6 @@ var Todo = exports.Todo = Montage.create(Component, {
 
     draw: {
         value: function() {
-            var todos = this.todos,
-                length = todos.length;
-
-            this.todoCount = todos.filter(function(data) { return !data.done; }).length;
-
             if (this.clearInput) {
                 this.clearInput = false;
                 this.newTodo.value = "";
@@ -63,16 +49,16 @@ var Todo = exports.Todo = Montage.create(Component, {
         }
     },
 
-    removeItem: {
-        value: function(data) {
-            var ix = this.todos.indexOf(data);
-            this.todos.splice(ix, 1);
+    handleDoneAction: {
+        value: function(e) {
+            e._target.parentComponent.needsDraw = true;
         }
     },
 
-    handleClearAction: {
+    handleArchiveAction: {
         value: function() {
             this.todos = this.todos.filter(function(todo) { return !todo.done; });
+            this.dispatchPropertyChange("remaining", function() {});
             this.needsDraw = true;
         }
     }
@@ -83,41 +69,30 @@ var TodoItem = exports.TodoItem = Montage.create(Component, {
         value: false
     },
 
-    prepareForDraw: {
-        value: function() {
-            var self = this,
-                element = this.element,
-                checkbox = element.querySelector("input[type='checkbox']");
-
-            this.checkbox = checkbox;
-            this.text = element.querySelector(".todo-text");
-
-            checkbox.addEventListener("change", function() {
-                self.data.done = this.checked;
-                self.needsDraw = true;
-            });
-        }
-    },
-
     draw: {
         value: function() {
             var data = this.data;
 
             if (data) {
-                this.text.textContent = data.text;
                 if (data.done) {
                     this.element.classList.add("is-done");
-                    this.checkbox.checked = true;
+                    //this.doneCheck.checked = true;
                 } else {
                     this.element.classList.remove("is-done");
-                    this.checkbox.checked = false;
+                    //this.doneCheck.checked = false;
                 }
             }
         }
     },
 
+    _data: {
+        value: null
+    },
+
     data: {
-        get: function() { return this._data; },
+        get: function() {
+            return this._data;
+        },
         set: function(value) {
             this._data = value;
             this.needsDraw = true;

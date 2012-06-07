@@ -1,0 +1,7 @@
+{
+    "name": "rosetta",
+    "version": "1.0.0",
+    "mappings": {
+        "montage": "../../"
+    }
+}

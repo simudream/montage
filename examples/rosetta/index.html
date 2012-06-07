@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <title>Rosetta</title>
+        <script src="../../montage.js"></script>
+        <script src="js/shCore.js"></script>
+        <script src="js/shBrushJScript.js"></script>
+        <script src="js/shBrushXml.js"></script>
+
+        <link rel="stylesheet" href="css/shCore.css" />
+        <link rel="stylesheet" href="css/shThemeDefault.css" />
+        <link rel="stylesheet" href="css/rosetta.css" />
+        
+        <script type="text/montage-serialization">{
+            "owner": {
+                "object": "rosetta",
+                "properties": {
+                    "element": {"#": "rosetta"}
+                }
+            },
+
+            "frameworkSelect": {
+                "prototype": "montage/ui/select-input.reel",
+                "properties": {
+                    "element": {"#": "framework-select"}
+                }
+            }
+        }</script>
+    </head>
+    <body>
+        <div id="rosetta" data-montage-id="rosetta">
+            <div class="header">
+                <h1>Rosetta</h1>
+
+                <p>
+                    If you're an experienced web developer, chances are that you're already familiar with one or more web app frameworks. 
+                    If so, and if you'd like to get a jump-start on Montage development, Rosetta is built especially for you!
+                </p>
+                <p>
+                    This tool will compare the same application written in a variety of frameworks with their Montage equivalent, drawing
+                    line-to-line comparisons of how Montage handles the fundamental concepts. Just choose a framework to compare, then click
+                    on any highlighted line to see how to accomplish the same thing in Montage.
+                </p>
+
+                <select data-montage-id="framework-select"></select>
+            </div>
+
+            <div id="code">
+
+                <pre id="montage-source" data-montage-id="montage-source" class="brush: js; toolbar: false; highlight: [2, 4, 6]">
+var Montage = require("montage").Montage,
+    Component = require("montage/ui/component").Component;
+
+var Todo = exports.Todo = Montage.create(Component, {
+    hasTemplate: {
+        value: false
+    },
+
+    todos: {
+        value: null
+    },
+
+    todoCount: {
+        value: 0,
+        serializable: true
+    },
+
+    templateDidLoad: {
+        value: function() {
+            var self = this,
+                todos;
+
+            this.todos = [];
+            this.newTodo = document.getElementById("new-todo");
+
+            this.newTodo.addEventListener("keypress", function(event) {
+                if (event.keyCode == 13 && this.value) {
+                    self.todos.push({text: this.value, done: false});
+                    self.clearInput = true;
+                    self.needsDraw = true;
+                }
+            });
+
+            this.todos.addPropertyChangeListener("done", function() {
+                self.needsDraw = true;
+            });
+
+            this.needsDraw = true;
+        }
+    },
+
+    draw: {
+        value: function() {
+            var todos = this.todos,
+                length = todos.length;
+
+            this.todoCount = todos.filter(function(data) { return !data.done; }).length;
+
+            if (this.clearInput) {
+                this.clearInput = false;
+                this.newTodo.value = "";
+            }
+        }
+    },
+
+    handleClearAction: {
+        value: function() {
+            this.todos = this.todos.filter(function(todo) { return !todo.done; });
+            this.needsDraw = true;
+        }
+    }
+});
+
+var TodoItem = exports.TodoItem = Montage.create(Component, {
+    hasTemplate: {
+        value: false
+    },
+
+    prepareForDraw: {
+        value: function() {
+            var self = this,
+                element = this.element,
+                checkbox = element.querySelector("input[type='checkbox']");
+
+            this.checkbox = checkbox;
+            this.text = element.querySelector(".todo-text");
+
+            checkbox.addEventListener("change", function() {
+                self.data.done = this.checked;
+                self.needsDraw = true;
+            });
+        }
+    },
+
+    draw: {
+        value: function() {
+            var data = this.data;
+
+            if (data) {
+                this.text.textContent = data.text;
+                if (data.done) {
+                    this.element.classList.add("is-done");
+                    this.checkbox.checked = true;
+                } else {
+                    this.element.classList.remove("is-done");
+                    this.checkbox.checked = false;
+                }
+            }
+        }
+    },
+
+    data: {
+        get: function() { return this._data; },
+        set: function(value) {
+            this._data = value;
+            this.needsDraw = true;
+        }
+    }
+});
+                </pre>
+
+                <pre id="other-source" data-montage-id="other-source" class="brush: js; toolbar: false; highlight: [2, 4, 6]">
+var Montage = require("montage").Montage,
+    Component = require("montage/ui/component").Component;
+
+var Todo = exports.Todo = Montage.create(Component, {
+    hasTemplate: {
+        value: false
+    },
+
+    todos: {
+        value: null
+    },
+
+    todoCount: {
+        value: 0,
+        serializable: true
+    },
+
+    templateDidLoad: {
+        value: function() {
+            var self = this,
+                todos;
+
+            this.todos = [];
+            this.newTodo = document.getElementById("new-todo");
+
+            this.newTodo.addEventListener("keypress", function(event) {
+                if (event.keyCode == 13 && this.value) {
+                    self.todos.push({text: this.value, done: false});
+                    self.clearInput = true;
+                    self.needsDraw = true;
+                }
+            });
+
+            this.todos.addPropertyChangeListener("done", function() {
+                self.needsDraw = true;
+            });
+
+            this.needsDraw = true;
+        }
+    },
+
+    draw: {
+        value: function() {
+            var todos = this.todos,
+                length = todos.length;
+
+            this.todoCount = todos.filter(function(data) { return !data.done; }).length;
+
+            if (this.clearInput) {
+                this.clearInput = false;
+                this.newTodo.value = "";
+            }
+        }
+    },
+
+    handleClearAction: {
+        value: function() {
+            this.todos = this.todos.filter(function(todo) { return !todo.done; });
+            this.needsDraw = true;
+        }
+    }
+});
+
+var TodoItem = exports.TodoItem = Montage.create(Component, {
+    hasTemplate: {
+        value: false
+    },
+
+    prepareForDraw: {
+        value: function() {
+            var self = this,
+                element = this.element,
+                checkbox = element.querySelector("input[type='checkbox']");
+
+            this.checkbox = checkbox;
+            this.text = element.querySelector(".todo-text");
+
+            checkbox.addEventListener("change", function() {
+                self.data.done = this.checked;
+                self.needsDraw = true;
+            });
+        }
+    },
+
+    draw: {
+        value: function() {
+            var data = this.data;
+
+            if (data) {
+                this.text.textContent = data.text;
+                if (data.done) {
+                    this.element.classList.add("is-done");
+                    this.checkbox.checked = true;
+                } else {
+                    this.element.classList.remove("is-done");
+                    this.checkbox.checked = false;
+                }
+            }
+        }
+    },
+
+    data: {
+        get: function() { return this._data; },
+        set: function(value) {
+            this._data = value;
+            this.needsDraw = true;
+        }
+    }
+});
+                </pre>
+
+            </div>
+        </div>
+
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+        </script>
+    </body>
+</html>
