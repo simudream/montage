@@ -1,8 +1,9 @@
 /* <copyright>
  This file contains proprietary software owned by Motorola Mobility, Inc.<br/>
  No rights, expressed or implied, whatsoever to this software are provided by Motorola Mobility, Inc. hereunder.<br/>
- (c) Copyright 2011 Motorola Mobility, Inc.  All Rights Reserved.
+ (c) Copyright 2012 Motorola Mobility, Inc.  All Rights Reserved.
  </copyright> */
+/*global Element,Components,Touch */
 /**
  *
  * @author: Lea Verou
@@ -111,11 +112,27 @@ Montage.defineProperty(Object.prototype, "removeEventListener", {
  */
 Montage.defineProperty(Object.prototype, "dispatchEvent", {
     value: function(event) {
-        var targettedEvent = MutableEvent.fromEvent(event);
+        var targettedEvent = event;
+
+        if (!MutableEvent.isPrototypeOf(event)) {
+             targettedEvent = MutableEvent.fromEvent(event);
+        }
+
         targettedEvent.target = this;
         defaultEventManager.handleEvent(targettedEvent);
     },
     enumerable: false
+});
+
+/**
+ @function external:Object#dispatchEventNamed
+ */
+Montage.defineProperty(Object.prototype, "dispatchEventNamed", {
+    value: function(type, canBubble, cancelable, detail) {
+        var event = MutableEvent.fromType(type, canBubble, cancelable, detail);
+        event.target = this;
+        defaultEventManager.handleEvent(event);
+    }
 });
 
 var EventListenerDescriptor = Montage.create(Montage, {
@@ -476,10 +493,11 @@ var EventManager = exports.EventManager = Montage.create(Montage,/** @lends modu
             // In some browsers each element has their own addEventLister/removeEventListener
             // Methodology to find all elements found in Chainvas
             if(HTMLDivElement.prototype.addEventListener !== Element.prototype.nativeAddEventListener) {
-                if (window.HTMLElement
-                    && 'addEventListener' in window.HTMLElement.prototype
-                    && window.Components
-                    && window.Components.interfaces) {
+                if (window.HTMLElement &&
+                    'addEventListener' in window.HTMLElement.prototype &&
+                    window.Components &&
+                    window.Components.interfaces
+                ) {
                     var candidate, candidatePrototype;
                     for(candidate in Components.interfaces) {
                         if(candidate.match(/^nsIDOMHTML\w*Element$/)) {
