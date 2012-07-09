@@ -1,8 +1,32 @@
 /* <copyright>
- This file contains proprietary software owned by Motorola Mobility, Inc.<br/>
- No rights, expressed or implied, whatsoever to this software are provided by Motorola Mobility, Inc. hereunder.<br/>
- (c) Copyright 2012 Motorola Mobility, Inc.  All Rights Reserved.
- </copyright> */
+Copyright (c) 2012, Motorola Mobility, Inc
+All Rights Reserved.
+BSD License.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+  - Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+  - Neither the name of Motorola Mobility nor the names of its contributors
+    may be used to endorse or promote products derived from this software
+    without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+</copyright> */
  var Montage = require("montage/core/core").Montage,
      Component = require("montage/ui/component").Component,
      Serializer = require("montage/core/serializer").Serializer,
@@ -253,7 +277,7 @@ describe("serialization/serializer-spec", function() {
             object.prop = object;
 
             serialization = serializer.serializeObject(object);
-            expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[CustomRef]","properties":{"object":{"@":"empty"}}}}');
+            expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[CustomRef]","properties":{"object":{"@":"empty"}}},"empty":{}}');
         });
 
         it("should serialize a function in an Object literal", function() {
@@ -342,7 +366,7 @@ describe("serialization/serializer-spec", function() {
                     }
                 }
 
-                expect(stripPP(serialization)).toBe('{"oneprop":{"prototype":"serialization/testobjects-v2[OneProp]","properties":{"prop":"prop1"}},"root":{"prototype":"serialization/testobjects-v2[SerializableAttribute]","properties":{"prop1a":{"@":"oneprop"},"prop1b":{"@":"oneprop"},"prop2a":{"@":"oneprop2"},"prop2b":{"@":"oneprop2"}}}}');
+                expect(stripPP(serialization)).toBe('{"oneprop":{"prototype":"serialization/testobjects-v2[OneProp]","properties":{"prop":"prop1"}},"root":{"prototype":"serialization/testobjects-v2[SerializableAttribute]","properties":{"prop1a":{"@":"oneprop"},"prop1b":{"@":"oneprop"},"prop2a":{"@":"oneprop2"},"prop2b":{"@":"oneprop2"}}},"oneprop2":{}}');
                 expect(length).toBe(1);
             });
 
@@ -468,7 +492,7 @@ describe("serialization/serializer-spec", function() {
                 object.addEventListener("action", Montage.create(), false);
 
                 var serialization = serializer.serializeObject(object);
-                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{"number":42},"listeners":[{"type":"action","listener":{"@":"montage"},"capture":false}]}}');
+                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{"number":42},"listeners":[{"type":"action","listener":{"@":"montage"},"capture":false}]},"montage":{}}');
             });
 
             it("should serialize the object manually without bindings", function() {
@@ -499,7 +523,7 @@ describe("serialization/serializer-spec", function() {
                 object.addEventListener("action", Montage.create(), false);
 
                 var serialization = serializer.serializeObject(object);
-                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"listeners":[{"type":"action","listener":{"@":"montage"},"capture":false}]}}');
+                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"listeners":[{"type":"action","listener":{"@":"montage"},"capture":false}]},"montage":{}}');
             });
         });
 
@@ -527,7 +551,7 @@ describe("serialization/serializer-spec", function() {
                 });
 
                 var serialization = serializer.serializeObject(object);
-                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"bindings":{"number":{"<-":"@oneprop.prop"}}}}');
+                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"bindings":{"number":{"<-":"@oneprop.prop"}}},"oneprop":{}}');
             });
 
             it("should serialize the object manually with bindings and no listeners", function() {
@@ -543,7 +567,7 @@ describe("serialization/serializer-spec", function() {
                 object.addEventListener("action", Montage.create(), false);
 
                 var serialization = serializer.serializeObject(object);
-                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"bindings":{"number":{"<-":"@oneprop.prop"}}}}');
+                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"bindings":{"number":{"<-":"@oneprop.prop"}}},"oneprop":{}}');
             });
         });
 
@@ -556,7 +580,7 @@ describe("serialization/serializer-spec", function() {
                 object.addEventListener("action", Montage.create(), false);
 
                 var serialization = serializer.serializeObject(object);
-                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{"number":42},"listeners":[{"type":"action","listener":{"@":"montage"},"capture":false}]}}');
+                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{"number":42},"listeners":[{"type":"action","listener":{"@":"montage"},"capture":false}]},"montage":{}}');
             });
 
             it("should serialize the object manually with bindings", function() {
@@ -571,7 +595,7 @@ describe("serialization/serializer-spec", function() {
                 });
 
                 var serialization = serializer.serializeObject(object);
-                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"bindings":{"number":{"<-":"@oneprop.prop"}}}}');
+                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"bindings":{"number":{"<-":"@oneprop.prop"}}},"oneprop":{}}');
             });
 
             it("should serialize the object manually with bindings and listeners", function() {
@@ -587,7 +611,7 @@ describe("serialization/serializer-spec", function() {
                 object.addEventListener("action", Montage.create(), false);
 
                 var serialization = serializer.serializeObject(object);
-                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"listeners":[{"type":"action","listener":{"@":"montage"},"capture":false}],"bindings":{"number":{"<-":"@oneprop.prop"}}}}');
+                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[Custom]","properties":{},"listeners":[{"type":"action","listener":{"@":"montage"},"capture":false}],"bindings":{"number":{"<-":"@oneprop.prop"}}},"montage":{},"oneprop":{}}');
             });
         });
 
@@ -609,7 +633,7 @@ describe("serialization/serializer-spec", function() {
                     };
                 };
                 var serialization = serializer.serializeObject(object);
-                expect(stripPP(serialization)).toBe('{"root":{"value":{"external":{"@":"oneprop"}}}}');
+                expect(stripPP(serialization)).toBe('{"root":{"value":{"external":{"@":"oneprop"}}},"oneprop":{}}');
             });
 
             it("should serialize the returned object instead", function() {
@@ -642,6 +666,25 @@ describe("serialization/serializer-spec", function() {
                 };
                 var serialization = serializer.serializeObject(object);
                 expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[TwoProps]","properties":{}}}');
+            });
+        });
+
+        describe("by serializing objects with a delegate", function() {
+            it("should serialize the properties list defined by the delegate", function() {
+                var twoProp = objects.TwoProps.create();
+                twoProp.prop1 = 1;
+                twoProp.prop2 = 2;
+
+                serializer.delegate = {
+                    serializeObjectProperties: function(serializer, object, propertyNames) {
+                        for (var i = 0; i < propertyNames.length; i++) {
+                            serializer.set(propertyNames[i], null);
+                        }
+                        serializer.set("prop3", object.prop2);
+                    }
+                };
+                var serialization = serializer.serializeObject(twoProp);
+                expect(stripPP(serialization)).toBe('{"root":{"prototype":"serialization/testobjects-v2[TwoProps]","properties":{"prop3":2}}}');
             });
         });
     });

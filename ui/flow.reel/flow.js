@@ -1,8 +1,32 @@
 /* <copyright>
- This file contains proprietary software owned by Motorola Mobility, Inc.<br/>
- No rights, expressed or implied, whatsoever to this software are provided by Motorola Mobility, Inc. hereunder.<br/>
- (c) Copyright 2012 Motorola Mobility, Inc.  All Rights Reserved.
- </copyright> */
+Copyright (c) 2012, Motorola Mobility, Inc
+All Rights Reserved.
+BSD License.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+  - Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+  - Neither the name of Motorola Mobility nor the names of its contributors
+    may be used to endorse or promote products derived from this software
+    without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+</copyright> */
 
 var Montage = require("montage").Montage,
     Component = require("ui/component").Component,
@@ -11,12 +35,10 @@ var Montage = require("montage").Montage,
 var Flow = exports.Flow = Montage.create(Component, {
 
     _repetition: {
-        serializable: true,
         value: null
     },
 
     _translateComposer: {
-        serializable: true,
         value: null
     },
 
@@ -88,7 +110,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     paths: { // TODO: listen for changes?
-        serializable: true,
         get: function () {
             return this._paths;
         },
@@ -135,7 +156,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     cameraPosition: {
-        serializable: true,
         get: function () {
             return this._cameraPosition;
         },
@@ -147,7 +167,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     cameraTargetPoint: {
-        serializable: true,
         get: function () {
             return this._cameraTargetPoint;
         },
@@ -159,7 +178,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     cameraFov: {
-        serializable: true,
         get: function () {
             return this._cameraFov;
         },
@@ -171,7 +189,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     cameraRoll: {
-        serializable: true,
         get: function () {
             return this._cameraRoll;
         },
@@ -188,7 +205,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     stride: {
-        serializable: true,
         get: function () {
             return this._stride;
         },
@@ -211,7 +227,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     scrollingTransitionDuration: { // TODO: think about using the Date Converter
-        serializable: true,
         get: function () {
             return this._scrollingTransitionDuration;
         },
@@ -248,12 +263,10 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     hasSelectedIndexScrolling: {
-        serializable: true,
         value: false
     },
 
     selectedIndexScrollingOffset: {
-        serializable: true,
         value: 0
     },
 
@@ -278,7 +291,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     scrollingTransitionTimingFunction: {
-        serializable: true,
         get: function () {
             return this._scrollingTransitionTimingFunction;
         },
@@ -405,7 +417,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     elementsBoundingSphereRadius: {
-        serializable: true,
         get: function () {
             return this._elementsBoundingSphereRadius;
         },
@@ -416,12 +427,12 @@ var Flow = exports.Flow = Montage.create(Component, {
             }
         }
     },
-    
+
     _halfPI: {
         enumerable: false,
         value: Math.PI*0.5
     },
-    
+
     _doublePI: {
         enumerable: false,
         value: Math.PI*2
@@ -783,19 +794,19 @@ var Flow = exports.Flow = Montage.create(Component, {
         distinct: true,
         value: []
     },
-    
+
     _cachedPosParameter: {
         enumerable: false,
         distinct: true,
         value: {}
     },
-    
+
     _cachedDrawOffset: {
         enumerable: false,
         distinct: true,
         value: {}
     },
-    
+
 
     _cachedSlide: {
         enumerable: false,
@@ -894,7 +905,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     selectedIndexes: {
-        serializable: true,
         get: function () {
             if (this._repetition) {
                 return this._repetition.selectedIndexes;
@@ -917,7 +927,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     activeIndexes: {
-        serializable: true,
         get: function () {
             if (this._repetition) {
                 return this._repetition.activeIndexes;
@@ -988,7 +997,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     objects: {
-        serializable: true,
         get: function() {
             if (this._repetition) {
                 return this._repetition.objects;
@@ -1012,7 +1020,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     contentController: {
-        serializable: true,
         get: function() {
             if (this._repetition) {
                 return this._repetition.contentController;
@@ -1035,7 +1042,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     isSelectionEnabled: {
-        serializable: true,
         get: function() {
             if (this._repetition) {
                 return this._repetition.isSelectionEnabled;
@@ -1138,7 +1144,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     hasElasticScrolling: {
-        serializable: true,
         get: function () {
             return this._hasElasticScrolling;
         },
@@ -1153,7 +1158,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     elasticScrollingSpeed: {
-        serializable: true,
         get: function () {
             return this._elasticScrollingSpeed;
         },
@@ -1370,7 +1374,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     scroll: {
-        serializable: true,
         get: function () {
             return this._scroll;
         },
@@ -1444,7 +1447,6 @@ var Flow = exports.Flow = Montage.create(Component, {
     },
 
     isInputEnabled: {
-        serializable: true,
         get: function () {
             return this._isInputEnabled;
         },
