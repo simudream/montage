@@ -37,7 +37,7 @@ var Gallery = exports.Gallery = Montage.create(Component, {
         value: null
     },
 
-    flow: {
+    list: {
         value: null
     },
 
