@@ -1,24 +1,25 @@
 /* <copyright>
-Copyright (c) 2012, Motorola Mobility, Inc
+Copyright (c) 2012, Motorola Mobility LLC.
 All Rights Reserved.
-BSD License.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-  - Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-  - Neither the name of Motorola Mobility nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of Motorola Mobility LLC nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -40,30 +41,45 @@ var Montage = require("montage").Montage,
     ChangeNotification = require("core/change-notification").ChangeNotification,
     defaultUndoManager = require("core/undo-manager").defaultUndoManager;
 
-
-/** static variables, constants
- */
-var COMMANDS = [
-        {property: "bold"},
-        {property: "underline"},
-        {property: "italic"},
-        {property: "strikeThrough"},
-        {property: "baselineShift", method: this._baselineShiftGetState},
-        {property: "justify", method: this._justifyGetState},
-        {property: "listStyle", method: this._listStyleGetState},
-        {property: "fontName", method: this._fontNameGetState},
-        {property: "fontSize"},
-        {property: "backColor"},
-        {property: "foreColor"}
-    ],
-    NBR_COMMANDS = COMMANDS.length;
-
-
 /**
     @class module:"montage/ui/rich-text-editor.reel".RichTextEditorBase
     @extends module:montage/ui/component.Component
 */
 exports.RichTextEditorBase = Montage.create(Component,/** @lends module:"montage/ui/rich-text-editor.reel".RichTextEditor# */ {
+    /**
+      Description TODO
+      @private
+    */
+    _COMMANDS: {
+        enumerable: false,
+        value: null
+    },
+
+    /**
+      Description TODO
+      @private
+    */
+    COMMANDS: {
+        enumerable: false,
+        get: function() {
+            if (!this._COMMANDS) {
+                this._COMMANDS = [
+                    {property: "bold"},
+                    {property: "underline"},
+                    {property: "italic"},
+                    {property: "strikeThrough"},
+                    {property: "baselineShift", method: this._baselineShiftGetState},
+                    {property: "justify", method: this._justifyGetState},
+                    {property: "listStyle", method: this._listStyleGetState},
+                    {property: "fontName", method: this._fontNameGetState},
+                    {property: "fontSize"},
+                    {property: "backColor"},
+                    {property: "foreColor"}
+                ];
+            }
+            return this._COMMANDS;
+        }
+    },
 
     /**
       Description TODO
@@ -549,7 +565,9 @@ exports.RichTextEditorBase = Montage.create(Component,/** @lends module:"montage
                 descriptor,
                 i;
 
-            for (i = 0; i < NBR_COMMANDS; i ++) {
+            var COMMANDS = this.COMMANDS;
+            var numCommands = COMMANDS.length;
+            for (i = 0; i < numCommands; i ++) {
                 command = COMMANDS[i];
 
                 if (typeof command == "object") {
@@ -916,8 +934,10 @@ exports.RichTextEditorBase = Montage.create(Component,/** @lends module:"montage
                 });
             }
 
-            // Force a selectionchange when we lose the focus
-            this.handleSelectionchange();
+            // As we lost focus, we need to prevent the selection change timer to fired, else it will cause the RTE to regain focus
+            if (this._selectionChangeTimer) {
+                clearTimeout(this._selectionChangeTimer);
+            }
 
             el.removeEventListener("blur", this, true);
             el.removeEventListener("input", this);

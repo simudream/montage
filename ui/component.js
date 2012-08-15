@@ -1,24 +1,25 @@
 /* <copyright>
-Copyright (c) 2012, Motorola Mobility, Inc
+Copyright (c) 2012, Motorola Mobility LLC.
 All Rights Reserved.
-BSD License.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-  - Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-  - Neither the name of Motorola Mobility nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of Motorola Mobility LLC nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -30,8 +31,8 @@ POSSIBILITY OF SUCH DAMAGE.
 /*global Element */
 /**
 	@module montage/ui/component
-    @requires montage/core/core
-    @requires montage/ui/reel
+    @requires montage
+    @requires montage/ui/template
     @requires montage/core/gate
     @requires montage/core/logger | component
     @requires montage/core/logger | drawing
@@ -59,6 +60,7 @@ var Component = exports.Component = Montage.create(Montage,/** @lends module:mon
     },
 
     templateObjects: {
+        serializable: false,
         value: null
     },
 
@@ -933,7 +935,7 @@ var Component = exports.Component = Montage.create(Montage,/** @lends module:mon
                 if (instances) {
                     instances.owner = self;
                 } else {
-                    instances = {owner: self};
+                    self.templateObjects = instances = {owner: self};
                 }
 
                 // this actually also serves as isTemplateInstantiating
@@ -1151,7 +1153,7 @@ var Component = exports.Component = Montage.create(Montage,/** @lends module:mon
             for (i = 0; (attribute = attributes[i]); i++) {
                 attributeName = attribute.nodeName;
                 if (attributeName === "id" || attributeName === "data-montage-id") {
-                    continue;
+                    value = attribute.nodeValue;
                 } else {
                     value = (template.getAttribute(attributeName) || "") + (attributeName === "style" ? "; " : " ") +
                         attribute.nodeValue;
@@ -1342,8 +1344,8 @@ var Component = exports.Component = Montage.create(Montage,/** @lends module:mon
      If the component cannot draw then it's recorded in the component's blockDrawGate that a draw was requested.<br>
      Two actions are required for a component to load:
      <ol>
-        <li><it needs an element/li>
-        <li><a draw must have been requested/li>
+        <li>it needs an element</li>
+        <li>a draw must have been requested</li>
      </ol>
      @type {Function}
      @default {Boolean} false

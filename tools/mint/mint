@@ -1,25 +1,26 @@
 #!/usr/bin/env node
 /* <copyright>
-Copyright (c) 2012, Motorola Mobility, Inc
+Copyright (c) 2012, Motorola Mobility LLC.
 All Rights Reserved.
-BSD License.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-  - Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-  - Neither the name of Motorola Mobility nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of Motorola Mobility LLC nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -126,8 +127,12 @@ function usage() {
     console.log("mint checks Montage Javascript files for coding errors.");
     console.log();
     console.log("\t--solution\tshow solutions along with problems");
+    console.log("\t--linters \tcomma-separated list of linters to run (see below)");
     console.log("\t--ignore  \tcomma-separated list of filenames to ignore. Ignores node_modules and test by default");
     console.log("\t--debug   \tshow debug messages, such as skipped files");
+    console.log();
+    console.log("Available linters: " + linterNames.join(" "));
+    console.log();
 }
 
 if (!module.parent) {
@@ -145,6 +150,9 @@ if (!module.parent) {
     if ((argPos = args.indexOf("--solution")) !== -1) {
         solution = true;
         args.splice(argPos, 1);
+    }
+    if ((argPos = args.indexOf("--linters")) !== -1) {
+        linterNames = args.splice(argPos, 2)[1].split(",");
     }
     if ((argPos = args.indexOf("--debug")) !== -1) {
         global.debug = true;

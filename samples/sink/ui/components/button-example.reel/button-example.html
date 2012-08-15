@@ -1,25 +1,26 @@
 <!doctype html>
 <!-- <copyright>
-Copyright (c) 2012, Motorola Mobility, Inc
+Copyright (c) 2012, Motorola Mobility LLC.
 All Rights Reserved.
-BSD License.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-  - Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-  - Neither the name of Motorola Mobility nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of Motorola Mobility LLC nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -54,20 +55,6 @@ POSSIBILITY OF SUCH DAMAGE.
         "prototype": "montage/ui/button.reel",
         "properties": {
             "element": {"#": "button2"}
-        },
-        "listeners": [
-            {
-                "type": "action",
-                "listener": {"@": "owner"}
-            }
-        ]
-    },
-
-    "settingsButton": {
-        "prototype": "montage/ui/button.reel",
-        "properties": {
-            "element": {"#": "settings"},
-            "identifier": "settings"
         },
         "listeners": [
             {
@@ -137,12 +124,6 @@ POSSIBILITY OF SUCH DAMAGE.
         "prototype": "ui/accordion.reel",
         "properties": {
             "element": {"#": "accordion3"}
-        }
-    },
-    "accordion4": {
-        "prototype": "ui/accordion.reel",
-        "properties": {
-            "element": {"#": "accordion4"}
         }
     },
 
@@ -418,84 +399,6 @@ exports.ButtonExample = Montage.create(Component, {
                 </ul>
 
 </section>
-
-
-
-
-            <!-- Will add icon support later
-
-            <h4>Adding an image icon</h4>
-
-            <p>To add an image icon to a Button use CSS, either by
-            setting a background image, or with the <code>:before</code> and
-            <code>:after</code> pseudo elements with the <code>content</code>
-            property:</p>
-
-
-            <div class="demo demo4">
-
-                <div class="app">
-                    <button class="btn settings" data-montage-id="settings">Settings</button>
-                </div>
-            </div>
-
-            <section>
-            <ul data-montage-id="accordion4" class="accordion">
-                <li class="accordion-group">
-                    <div class="accordion-heading"><a href="javascript: void(0);" class="accordion-toggle">HTML</a></div>
-                    <div class="accordion-inner montage-hidden" >
-                        <pre class="prettyprint-dark-dark">
-&lt;button class="btn settings" data-montage-id="settings"&gt;Settings&lt;/button&gt;
-</pre>
-                    </div>
-                </li>
-                <li class="accordion-group">
-                    <div class="accordion-heading"><a href="javascript: void(0);" class="accordion-toggle">Serialization</a></div>
-                    <div class="accordion-inner montage-hidden">
-                        <pre class="prettyprint">
-{
-    "settingsButton": {
-        "prototype": "montage/ui/button.reel",
-        "properties": {
-            "element": {"#": "settings"},
-            "identifier": "settings"
-        },
-        "listeners": [
-            {
-                "type": "action",
-                "listener": {"@": "owner"}
-            }
-        ]
-    },
-    "owner": {
-        "prototype": "ui/components/button-example.reel",
-        "properties": {
-            "element": {"#": "buttontest"},
-            "logger": {"@": "logger"}
-        }
-    }
-}
-</pre>
-
-                    </div>
-                </li>
-                <li class="accordion-group">
-                    <div class="accordion-heading"><a href="javascript: void(0);" class="accordion-toggle">CSS</a></div>
-                    <div class="accordion-inner montage-hidden">
-                        <pre class="prettyprint">
-.settings:before {
-    content: url(images/settings.png);
-    vertical-align: middle;
-    display: inline-block;
-    padding-right: 0.5em;
-}
-</pre>
-                    </div>
-                </li>
-            </ul>
-
-
-        </section>-->
 
                     <section>
                         <a href="https://github.com/Motorola-Mobility/montage/tree/v0.11/examples/sink/components/button-example.reel" target="_blank">View source on GitHub</a>

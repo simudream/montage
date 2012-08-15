@@ -1,24 +1,25 @@
 /* <copyright>
-Copyright (c) 2012, Motorola Mobility, Inc
+Copyright (c) 2012, Motorola Mobility LLC.
 All Rights Reserved.
-BSD License.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-  - Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-  - Neither the name of Motorola Mobility nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of Motorola Mobility LLC nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -33,6 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
     @requires montage/core/serializer
     @requires montage/core/deserializer
     @requires montage/core/logger
+    @requires montage/core/event/event-manager
+
+    @requires montage/ui/application
 */
 
 exports = typeof exports !== "undefined" ? exports : {};
@@ -502,9 +506,9 @@ var Template = exports.Template = Montage.create(Montage, /** @lends module:mont
                                 // that repeats its child components, we can
                                 // safely recreate this property with a static value
                                 Object.defineProperty(this, label, {
-                                    value: component
+                                    value: components[0]
                                 });
-                                return component;
+                                return components[0];
                             } else if (component.clonesChildComponents) {
                                 break;
                             }
@@ -721,7 +725,7 @@ var Template = exports.Template = Montage.create(Montage, /** @lends module:mont
         }
 
         var self = this,
-            rootUrl = this._rootUrl[0],
+            rootUrl = this._rootUrl,
             documentHead = doc.head,
             callbacks = this._stylesLoadedCallbacks = [],
             cssTags = this._document.querySelectorAll('link[rel="stylesheet"], style'),
@@ -811,7 +815,7 @@ var Template = exports.Template = Montage.create(Montage, /** @lends module:mont
     insertScriptsInDocumentIfNeeded: {value: function(doc) {
         var importedScripts = doc._montage_importedScripts,
             _rootUrl = this._rootUrl,
-            rootUrl = _rootUrl ? _rootUrl[0] : null;
+            rootUrl = _rootUrl || null;
 
         if (!rootUrl) {
             return;
@@ -953,11 +957,11 @@ var Template = exports.Template = Montage.create(Montage, /** @lends module:mont
 
         self._id = requireFunction.location + "/" + moduleId;
         if (exports) {
-            self._rootUrl = exports.root;
+            self._rootUrl = exports.directory;
             callback(self.createHtmlDocumentFromString(exports.content));
         } else {
             requireFunction.async(moduleId, function(exports) {
-                self._rootUrl = (self._documentCache[moduleId] = exports).root;
+                self._rootUrl = (self._documentCache[moduleId] = exports).directory;
                 callback(self.createHtmlDocumentFromString(exports.content));
             });
         }
@@ -975,7 +979,7 @@ var Template = exports.Template = Montage.create(Montage, /** @lends module:mont
         if (script) {
             return script.textContent;
         } else if (this._document.querySelector("script[type='" + this._OLD_SCRIPT_TYPE + "']")) {
-            logger.error("Unsupported serialization found" + (this._rootUrl ? " on " + this._rootUrl.input : "") + ", please upgrade to the new one.");
+            logger.error("Unsupported serialization found" + (this._rootUrl ? " on " + this._rootUrl : "") + ", please upgrade to the new one.");
         } else {
             return null;
         }
@@ -993,7 +997,7 @@ var Template = exports.Template = Montage.create(Montage, /** @lends module:mont
         if (link) {
             var req = new XMLHttpRequest(),
                 url = link.getAttribute("href"),
-                rootUrl = this._rootUrl ? this._rootUrl[0] : "";
+                rootUrl = this._rootUrl || "";
 
             if (! /^https?:\/\/|^\//.test(url)) {
                 url = rootUrl + url;
@@ -1055,7 +1059,7 @@ var Template = exports.Template = Montage.create(Montage, /** @lends module:mont
      @private
     */
     _createDeserializer: {value: function(serialization) {
-        var rootUrl = this._rootUrl ? this._rootUrl.input : window.location.href;
+        var rootUrl = this._rootUrl ? this._rootUrl : window.location.href;
         return this._deserializer = Deserializer.create().initWithStringAndRequire(this._ownerSerialization = serialization, this._require, rootUrl);
     }},
 

@@ -1,24 +1,25 @@
 /* <copyright>
-Copyright (c) 2012, Motorola Mobility, Inc
+Copyright (c) 2012, Motorola Mobility LLC.
 All Rights Reserved.
-BSD License.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-  - Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-  - Neither the name of Motorola Mobility nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of Motorola Mobility LLC nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -90,9 +91,14 @@ var loadPackagedModule = function (directory, program, command, args) {
 };
 
 MontageBoot.loadPackage = function (location, config) {
-    var config = {};
 
-    config.location = URL.resolve(Require.getLocation(), location + '/');
+    if (location.slice(location.length - 1, location.length) !== "/") {
+        location += "/";
+    }
+
+    config = config || {};
+
+    config.location = URL.resolve(Require.getLocation(), location);
 
     // setup the reel loader
     config.makeLoader = function (config) {
@@ -120,6 +126,7 @@ MontageBoot.TemplateLoader = function (config, load) {
     return function(id, module) {
         var html = id.match(/(.*\/)?(?=[^\/]+\.html$)/);
         var serialization = id.match(/(?=[^\/]+\.json$)/); // XXX this is not necessarily a strong indicator of a serialization alone
+        var reelModule = id.match(/(.*\/)?([^\/]+)\.reel\/\2/);
         if (html) {
             return load(id, module)
             .then(function () {
@@ -131,6 +138,17 @@ MontageBoot.TemplateLoader = function (config, load) {
             .then(function () {
                 module.dependencies = collectSerializationDependencies(module.text, []);
                 return module;
+            });
+        } else if (reelModule) {
+            return load(id, module)
+            .then(function () {
+                var reelHtml = URL.resolve(module.location, reelModule[2] + ".html");
+                return Require.isFile(reelHtml)
+                .then(function (isFile) {
+                    if (isFile) {
+                        module.extraDependencies = [id + ".html"];
+                    }
+                })
             });
         } else {
             return load(id, module);
@@ -197,10 +215,20 @@ var collectSerializationDependencies = function (text, dependencies) {
     var serialization = JSON.parse(text);
     Object.keys(serialization).forEach(function (label) {
         var description = serialization[label];
-        if (typeof description.module === "string") {
+        if (description.lazy) {
+            return;
+        }
+        if (typeof description.module === "string") { // XXX deprecated
             dependencies.push(description.module);
+        }
+        if (typeof description.prototype === "string") {
+            dependencies.push(parsePrototypeForModule(description.prototype));
         }
     });
     return dependencies;
 };
+
+function parsePrototypeForModule(prototype) {
+    return prototype.replace(/\[[^\]]+\]$/, "");
+}
 

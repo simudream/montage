@@ -1,24 +1,25 @@
 /* <copyright>
-Copyright (c) 2012, Motorola Mobility, Inc
+Copyright (c) 2012, Motorola Mobility LLC.
 All Rights Reserved.
-BSD License.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-  - Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-  - Neither the name of Motorola Mobility nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of Motorola Mobility LLC nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -30,7 +31,7 @@ POSSIBILITY OF SUCH DAMAGE.
  /*global require, exports*/
 
 /**
-    @module "montage/ui/button.reel"
+    @module "montage/ui/native/button.reel"
     @requires montage/core/core
     @requires montage/ui/component
     @requires montage/ui/native-control
@@ -43,8 +44,10 @@ var Montage = require("montage").Montage,
 
 /**
     Wraps a native <code>&lt;button></code> or <code>&lt;input[type="button"]></code> HTML element. The element's standard attributes are exposed as bindable properties.
-    @class module:"montage/ui/button.reel".Button
+    @class module:"montage/ui/native/button.reel".Button
     @extends module:montage/ui/native-control.NativeControl
+    @fires action
+    @fires hold
     @example
 <caption>JavaScript example</caption>
 var b1 = Button.create();
@@ -56,7 +59,7 @@ b1.addEventListener("action", function(event) {
 <caption>Serialized example</caption>
 {
     "aButton": {
-        "prototype": "montage/ui/button.reel",
+        "prototype": "montage/ui/native/button.reel",
         "properties": {
             "element": {"#": "btnElement"}
         },
@@ -73,7 +76,25 @@ b1.addEventListener("action", function(event) {
 }
 &lt;button data-montage-id="btnElement"></button>
 */
-var Button = exports.Button = Montage.create(NativeControl, /** @lends module:"montage/ui/button.reel".Button# */ {
+var Button = exports.Button = Montage.create(NativeControl, /** @lends module:"montage/ui/native/button.reel".Button# */ {
+
+    /**
+        Dispatched when the button is activated through a mouse click, finger tap,
+        or when focused and the spacebar is pressed.
+
+        @event action
+        @memberof module:"montage/ui/native/button.reel".Button
+        @param {Event} event
+    */
+
+    /**
+        Dispatched when the button is pressed for a period of time, set by
+        {@link holdThreshold}.
+
+        @event hold
+        @memberof module:"montage/ui/native/button.reel".Button
+        @param {Event} event
+    */
 
     _preventFocus: {
         enumerable: false,
@@ -133,7 +154,7 @@ var Button = exports.Button = Montage.create(NativeControl, /** @lends module:"m
     _label: { value: undefined, enumerable: false },
 
     /**
-        The label for the button. In an &lt;input> element this is taken from the element's <code>value</code> attribute. On any other element (including &lt;button>) this is the first child node which is a text node. If one isn't found then it will be created.
+        The displayed text on the button. In an &lt;input> element this is taken from the element's <code>value</code> attribute. On any other element (including &lt;button>) this is the first child node which is a text node. If one isn't found then it will be created.
 
         If the button has a non-null <code>converter</code> property, the converter object's <code>convert()</code> method is called on the value before being assigned to the button instance.
 
@@ -386,29 +407,41 @@ var Button = exports.Button = Montage.create(NativeControl, /** @lends module:"m
 
             this._drawLabel(this.label);
         }
+    },
+
+    _detail: {
+        value: null
+    },
+
+    /**
+        The data property of the action event.
+        example to toggle the complete class: "detail.selectedItem" : { "<-" : "@repetition.objectAtCurrentIteration"}
+        @type {Property}
+        @default null
+    */
+    detail: {
+        get: function() {
+            if (this._detail === null) {
+                this._detail = EventData.create();
+            }
+            return this._detail;
+        }
+    },
+
+    createActionEvent: {
+        value: function() {
+            var actionEvent = document.createEvent("CustomEvent"),
+                detail, eventDetail;
+            if(detail = this._detail) {
+                eventDetail = detail._data;
+            }
+            actionEvent.initCustomEvent("action", true, true, eventDetail);
+            return actionEvent;
+        }
     }
 });
 
-// TODO: Display events in JSDoc output
- /**
- @event
- @name action
- @param {Event} event
-
- Dispatched when the button is activated through a mouse click, finger tap,
- or when focused and the spacebar is pressed.
- */
-
- /**
- @event
- @name hold
- @param {Event} event
-
- Dispatched when the button is pressed for a period of time, set by
- {@link holdThreshold}.
- */
-
-Button.addAttributes( /** @lends module:"montage/ui/button.reel".Button# */{
+Button.addAttributes( /** @lends module:"montage/ui/native/button.reel".Button# */{
 
 /**
     Specifies whether the button should be focused as soon as the page is loaded.
@@ -481,9 +514,79 @@ Button.addAttributes( /** @lends module:"montage/ui/button.reel".Button# */{
     name: null,
 
 /**
-    The value associated with the element.
+    <strong>Use <code>label</code> to set the displayed text on the button</strong>
+    The value associated with the element. This sets the value attribute of
+    the button that gets sent when the form is submitted.
     @type {string}
     @default null
+    @see label
 */
     value: null
+
+});
+
+var EventData = Montage.create(Montage, {
+
+    didCreate: {
+        value: function() {
+            this._data = Object.create(null);
+        }
+    },
+
+    initWithReservedAndOptions: {
+        value: function(reserved, options) {
+            Map.call(this, reserved, options);
+        }
+    },
+
+    get: {
+        value: function (key) {
+            return this.undefinedGet(key);
+        }
+    },
+
+    set: {
+        value: function (key, value) {
+            this.undefinedSet(key, value);
+        }
+    },
+
+    _data: {
+        value: null
+    },
+
+    _defineProperty: {
+        value: function(key, value) {
+            value = typeof value !== "undefined" ? value : null;
+            Montage.defineProperty(this, key, {
+                get: function() {
+                    return this._data[key];
+                },
+                set: function(value) {
+                    this._data[key] = value;
+                }
+            });
+            this._data[key] = value;
+        }
+    },
+
+    undefinedGet: {
+        value: function(key) {
+            if (typeof this._data[key] === "undefined") {
+                this._defineProperty(key);
+            }
+            return this._data[key];
+        }
+    },
+
+    undefinedSet: {
+        value: function(key, value) {
+            if (typeof this._data[key] === "undefined") {
+                this._defineProperty(key, value);
+            } else {
+                this._data[key] = value;
+            }
+        }
+    }
+
 });

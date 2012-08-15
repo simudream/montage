@@ -1,24 +1,25 @@
 /* <copyright>
-Copyright (c) 2012, Motorola Mobility, Inc
+Copyright (c) 2012, Motorola Mobility LLC.
 All Rights Reserved.
-BSD License.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-  - Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-  - Neither the name of Motorola Mobility nor the names of its contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of Motorola Mobility LLC nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -56,7 +57,7 @@ function build(applications, options, catalog) {
         applications = [applications];
     }
     var applicationConfigs = [];
-    return Q.call(function () {
+    return Q.fcall(function () {
         if (options.force) {
             return "";
         } else {
@@ -164,7 +165,7 @@ function buildPackage(config, catalog, options) {
     // reconfigure
     config.contents['package.json'].utf8 = JSON.stringify(reconfig(config, catalog));
 
-    return Q.call(function () {
+    return Q.fcall(function () {
         //console.log('Transforming', config.buildLocation);
         return transform(config, catalog, options);
     })
@@ -191,7 +192,7 @@ function write(config) {
             return;
         var buildName = FS.join(config.buildLocation, name);
         var directory = FS.directory(buildName);
-        return Q.call(function () {
+        return Q.fcall(function () {
             return FS.makeTree(directory)
         })
         .then(function () {
@@ -204,7 +205,7 @@ function write(config) {
 }
 
 function link(config) {
-    return Q.call(function () {
+    return Q.fcall(function () {
         if (config.linkLocation === void 0)
             return;
         if (config.buildLocation === config.linkLocation)
